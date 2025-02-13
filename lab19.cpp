@@ -1,4 +1,85 @@
 // Please include header (lab21.h) here.
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+class Unit {
+public:
+    string name;
+    int hp, hpmax, atk, def;
+    bool guard_on;
+    
+    void create(string t_name) {
+        name = t_name;
+        if (t_name == "Hero") {
+            hpmax = 100;
+            atk = 20;
+            def = 10;
+        } else {
+            hpmax = 80;
+            atk = 25;
+            def = 5;
+        }
+        hp = hpmax;
+        guard_on = false;
+    }
+
+    void newTurn() {
+        guard_on = false;
+    }
+
+    void showStatus() {
+        cout << "---------------------------------------\n";
+        cout << name << "\n";
+        cout << "HP: " << hp << "/" << hpmax << "   ATK: " << atk << "   DEF: " << def << "\n";
+        cout << "---------------------------------------\n";
+    }
+
+    bool isDead() {
+        return hp <= 0;
+    }
+
+    void guard() {
+        guard_on = true;
+    }
+
+    int heal() {
+        int h = rand() % 21 + 10; // ฟื้นฟูเลือดระหว่าง 10 ถึง 30
+        if (hp + h > hpmax) h = hpmax - hp;
+        hp += h;
+        return h;
+    }
+
+    int beAttacked(int opp_atk) {
+        int dmg;
+        if (guard_on) dmg = (opp_atk - def) / 3; // ลดความเสียหายถ้าป้องกัน
+        else dmg = opp_atk - def;
+
+        if (dmg < 0) dmg = 0;
+        hp -= dmg;
+        return dmg;
+    }
+
+    int attack(Unit &target) {
+        return target.beAttacked(atk);
+    }
+};
+
+void drawScene(char p_action, int p_val, char m_action, int m_val) {
+    cout << "\n";
+    cout << "Player Action: " << p_action << " (" << p_val << ")" << " | Monster Action: " << m_action << " (" << m_val << ")\n";
+    cout << "\n";
+}
+
+void playerWin() {
+    cout << "\nYou have defeated the monster!\n";
+}
+
+void playerLose() {
+    cout << "\nYou have been defeated! Game Over.\n";
+}
+
 
 int main(){
 	srand(time(0));
